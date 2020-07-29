@@ -1,0 +1,95 @@
+<div class="ob-form__element ob-files">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">
+    {{::$ctrl.element.label}}
+  </label>
+
+  <input type="file"
+         name="{{::$ctrl.element.name}}"
+         id="{{::$ctrl.element.id}}_{{::$id}}"
+         class="file-input ob-input"
+         ng-model="$ctrl.value"
+         ng-model-options="{ allowInvalid: true }"
+         ob-multiple="::$ctrl.element.maxEntries !== 1"
+         ng-disabled="::$ctrl.element.readOnly"
+         ng-change="$ctrl.updateProperty({ value: $ctrl.value })">
+  <div class="control cypress-files-control">
+    <div class="columns is-multiline">
+      <div ng-repeat="file in $ctrl.value"
+           class="column is-one-quarter">
+        <div class="ob-files__box">
+          <div class="ob-files__content">
+            <div ng-if="::$ctrl.checkIsImageType(file)"
+                 class="ob-files__content-image">
+              <img class="ob-files__image"
+                   ng-src="{{::file.data}}" />
+            </div>
+            <div ng-if="::!$ctrl.checkIsImageType(file)"
+                 class="ob-files__content-file has-text-centered">
+              <i class="material-icons icon-large ob-files__attach-icon has-text-grey">attach_file</i>
+            </div>
+          </div>
+
+          <div class="dropdown is-right ob-files__menu"
+               ng-class="{ 'is-active': isMenuActive }"
+               click-outside="isMenuActive = false">
+            <div class="dropdown-trigger">
+              <button class="button ob-files__menu-button cypress-file-menu-button"
+                      aria-haspopup="true"
+                      aria-controls="dropdown-menu"
+                      ng-click="isMenuActive = !isMenuActive">
+                <i class="material-icons ob-files__menu-icon">more_vert</i>
+              </button>
+            </div>
+            <div class="dropdown-menu"
+                 role="menu">
+              <div class="dropdown-content">
+                <a class="dropdown-item cypress-file-download-button"
+                   ng-click="isMenuActive = false; $ctrl.downloadFile(file)">
+                  Download
+                </a>
+                <a class="dropdown-item cypress-file-remove-button"
+                   ng-hide="::$ctrl.element.readOnly"
+                   ng-click="isMenuActive = false; $ctrl.clear($index)">
+                  Remove
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="ob-files__file-name is-size-6">
+            {{::file.fileName}}
+          </div>
+        </div>
+      </div>
+      <div ng-if="::!$ctrl.element.readOnly"
+           ng-hide="$ctrl.value.length >= $ctrl.element.maxEntries"
+           class="column is-one-quarter">
+        <button class="button ob-files__add-new-button"
+                ng-click="$ctrl.selectFiles()">
+          <i class="material-icons icon-x-large">add</i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="minEntries"
+         class="has-text-danger ob-error__text cypress-file-min-entries">
+      Please upload at least {{::$ctrl.element.minEntries}} file(s).
+    </div>
+    <div ng-message="maxEntries"
+         class="has-text-danger ob-error__text cypress-file-max-entries">
+      Cannot upload more than {{::$ctrl.element.maxEntries}} file(s).
+    </div>
+  </div>
+  <div ng-if="$ctrl.invalidFile"
+       class="notification is-warning is-light cypress-restricted-message has-margin-top-6">
+    <button class="delete"
+            ng-click="$ctrl.invalidFile = false"></button>
+    Only the following file types are accepted: {{$ctrl.restrictedMessage}}
+  </div>
+</div>

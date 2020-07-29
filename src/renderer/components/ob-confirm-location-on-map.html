@@ -1,0 +1,69 @@
+<div class="ob-location">
+  <figure ng-if="$ctrl.loading">
+    <div class="figure-content has-text-centered">
+      <on-loading small="true"></on-loading>
+    </div>
+  </figure>
+
+  <bm-location-on-map coords="$ctrl.coords"
+                      ng-disabled="{{!$ctrl.isEditing}}"
+                      on-change="$ctrl.onChange(value)"
+                      ng-if="!$ctrl.isOffline && ($ctrl.isEditing || $ctrl.coords)"></bm-location-on-map>
+
+  <div ng-show="$ctrl.isOffline">
+    <figure ng-show="$ctrl.isEditing">
+      <div class="figure-content has-text-centered">
+        <h4 class="title is-4">You are currently offline</h4>
+        <p ng-if="$ctrl.coords">
+          Click the <b>Confirm</b> button below to set the location to your current position.
+        </p>
+        <p ng-if="!$ctrl.coords">
+          We could not find your current location. Click the <b>Cancel</b> button below to try again.
+        </p>
+      </div>
+    </figure>
+
+    <figure ng-show="!$ctrl.isEditing && $ctrl.coords">
+      <div class="figure-content has-text-centered">
+        <h4 class="title is-4">You are currently offline</h4>
+        <h3 class="title is-3 ob-location__latitude">Latitude</h3>
+        <p><b>{{$ctrl.coords.latitude}}</b></p>
+        <h3 class="title is-3 ob-location__longitude">Longitude</h3>
+        <p><b>{{$ctrl.coords.longitude}}</b></p>
+      </div>
+    </figure>
+  </div>
+
+  <div class="buttons ob-buttons ob-location__buttons">
+
+    <button type="button"
+            class="is-light button ob-button ob-button__cancel ob-location__button ob-location__button-cancel cypress-cancel-location-button"
+            ng-show="$ctrl.isEditing || $ctrl.loading"
+            ng-click="$ctrl.onCancel()"
+            ng-disabled="::$ctrl.element.readOnly">Cancel</button>
+    <button type="button"
+            class="is-primary button ob-button ob-button__confirm ob-location__button ob-location__button-confirm cypress-confirm-location-button"
+            ng-show="$ctrl.isEditing || $ctrl.loading"
+            ng-disabled="$ctrl.loading || !$ctrl.coords"
+            ng-click="$ctrl.onConfirm()"
+            ng-disabled="::$ctrl.element.readOnly">Confirm</button>
+
+    <button type="button"
+            class="is-light button ob-button ob-button__clear ob-button-clear ob-location__button ob-location__button-clear cypress-clear-location-button"
+            ng-hide="$ctrl.isEditing || $ctrl.loading"
+            ng-click="$ctrl.onClear()"
+            ng-disabled="::$ctrl.element.readOnly">Clear</button>
+    <button type="button"
+            class="is-primary button ob-button ob-button__edit ob-location__button ob-location__button-edit cypress-locate-button"
+            ng-hide="$ctrl.isEditing || $ctrl.loading"
+            ng-click="$ctrl.onEdit()"
+            ng-disabled="::$ctrl.element.readOnly">Locate</button>
+
+    <button ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+            type="button"
+            class="button ob-button is-primary cypress-lookup-button"
+            ng-hide="$ctrl.isEditing || $ctrl.loading || !$ctrl.coords"
+            type="button"
+            ob-lookup-button></button>
+  </div>
+</div>

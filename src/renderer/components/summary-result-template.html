@@ -1,0 +1,7 @@
+<div ng-repeat="result in $ctrl.result track by $index"
+     class="ob-summary__result-container">
+  <p ng-if="$ctrl.isString(result)"
+     class="ob-summary__result has-line-breaks cypress-summary-result-text">{{result}}</p>
+  <ob-summary-result ng-if="$ctrl.isArray(result)"
+                     result="result"></ob-summary-result>
+</div>

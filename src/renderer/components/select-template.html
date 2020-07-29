@@ -1,0 +1,78 @@
+<div class="ob-form__element ob-select">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">
+    {{::$ctrl.element.label}}</label>
+  <div ng-if="$ctrl.isFetchingOptions">
+    <on-loading small="true"></on-loading>
+  </div>
+  <div ng-if="::$ctrl.element.options">
+    <div ng-if="::!$ctrl.element.options.length"
+         class="has-text-grey is-size-7">
+      We were unable to load your options. Please contact your administrator.
+    </div>
+    <div ng-if="::$ctrl.element.options.length">
+      <div ng-if="::!!$ctrl.element.multi"
+           class="control">
+        <div class="select is-multiple">
+          <select class="cypress-select-multiple-control ob-input ob-select__multi"
+                  id="{{::$ctrl.element.id}}_{{::$id}}"
+                  name="{{::$ctrl.element.name}}"
+                  multiple
+                  ng-required="::$ctrl.element.required"
+                  ng-model="$ctrl.value"
+                  ng-disabled={{::$ctrl.element.readOnly}}
+                  ng-change="$ctrl.updateProperty({ value: $ctrl.value })"
+                  ng-options="option.value as option.label for option in $ctrl.element.options | filter:$ctrl.conditionallyShowOptionFilter($ctrl)"
+                  ob-options-validator="$ctrl.element.options | filter:$ctrl.conditionallyShowOptionFilter($ctrl)"
+                  ob-element="::$ctrl.element">
+          </select>
+          <button ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+                  type="button"
+                  class="button ob-button is-primary has-margin-top-8 cypress-lookup-button"
+                  type="button"
+                  ob-lookup-button></button>
+        </div>
+      </div>
+
+      <div ng-if="::!$ctrl.element.multi"
+           class="field has-addons">
+        <div class="control is-expanded">
+          <div class="select is-fullwidth">
+            <select class="cypress-select-single-control ob-input ob-select__single"
+                    id="{{::$ctrl.element.id}}_{{::$id}}"
+                    name="{{::$ctrl.element.name}}"
+                    ng-required="::$ctrl.element.required"
+                    ng-model="$ctrl.value"
+                    ng-disabled={{::$ctrl.element.readOnly}}
+                    ng-change="$ctrl.updateProperty({ value: $ctrl.value })"
+                    ng-options="option.value as option.label for option in $ctrl.element.options | filter:$ctrl.conditionallyShowOptionFilter($ctrl)"
+                    ob-options-validator="$ctrl.element.options | filter:$ctrl.conditionallyShowOptionFilter($ctrl)"
+                    ob-element="::$ctrl.element">
+              <option value="">Please choose</option>
+            </select>
+          </div>
+        </div>
+        <div ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+             class="control">
+          <button class="button is-primary is-input-addon cypress-lookup-button"
+                  type="button"
+                  ob-lookup-button>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+
+    <div ng-message="required, isValidOption"
+         class="ob-error__text has-text-danger cypress-required">
+      {{::$ctrl.element.options.length > 1 && $ctrl.element.multi ? 'Please select at least 1 option.' : 'Required'}}
+    </div>
+    <div ng-message="lookup"
+         ng-show="$ctrl.parentForm.$submitted"
+         class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+  </div>
+</div>

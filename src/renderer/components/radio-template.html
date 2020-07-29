@@ -1,0 +1,67 @@
+<div class="ob-form__element ob-radio">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}">
+    {{::$ctrl.element.label}}</label>
+  <div ng-if="$ctrl.isFetchingOptions">
+    <on-loading small="true"></on-loading>
+  </div>
+  <div ng-if="::$ctrl.element.options">
+    <div ng-if="::!$ctrl.element.options.length"
+         class="has-text-grey is-size-7">
+      We were unable to load your options. Please contact your administrator.
+    </div>
+    <div ng-if="::$ctrl.element.options.length"
+         name="{{::$ctrl.element.name}}"
+         ng-model="$ctrl.value"
+         ng-required="::$ctrl.element.required"
+         ng-change="$ctrl.updateProperty({ value: $ctrl.value })"
+         ob-options-validator="$ctrl.element.options | filter:$ctrl.conditionallyShowOptionFilter()"
+         ob-element="::$ctrl.element">
+      <div ng-if="::!$ctrl.element.buttons">
+        <div class="control"
+             ng-repeat="option in $ctrl.element.options | filter:$ctrl.conditionallyShowOptionFilter()">
+          <label class="checkbox ob-radio__input-label cypress-radio-label"
+                 ng-disabled={{::$ctrl.element.readOnly}}
+                 for="{{::$ctrl.element.id}}_{{::$id}}_{{::option.value}}">
+            <input type="radio"
+                   class="checkbox ob-radio__input cypress-radio-control"
+                   value="{{::option.value}}"
+                   id="{{::$ctrl.element.id}}_{{::$id}}_{{::option.value}}"
+                   ng-disabled={{::$ctrl.element.readOnly}}
+                   ng-checked="$ctrl.value === option.value"
+                   ng-click="$ctrl.parentForm[$ctrl.element.name].$setViewValue(option.value);" /> {{::option.label}}
+          </label>
+        </div>
+      </div>
+      <div class="buttons ob-buttons ob-buttons-radio cypress-radio-button-group"
+           ng-if="::$ctrl.element.buttons">
+        <div class="ob-button-radio-container"
+             ng-repeat="option in $ctrl.element.options | filter:$ctrl.conditionallyShowOptionFilter()">
+          <button type="button"
+                  class="button ob-button ob-button__input ob-radio__button cypress-radio-button-control"
+                  ng-click="$ctrl.parentForm[$ctrl.element.name].$setViewValue(option.value);"
+                  ng-class="{ 'is-primary': $ctrl.value === option.value, 'is-light': $ctrl.value !== option.value }"
+                  ng-style="option.colour && option.value === $ctrl.value ? { 'background-color': option.colour } : {}"
+                  ng-disabled={{::$ctrl.element.readOnly}}>
+            {{::option.label}}
+          </button>
+        </div>
+      </div>
+
+      <button ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+              type="button"
+              class="button ob-button is-primary has-margin-top-8 cypress-lookup-button"
+              type="button"
+              ob-lookup-button></button>
+    </div>
+  </div>
+  <div role="alert"
+       ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required, isValidOption"
+         class="ob-error__text has-text-danger cypress-required">Required</div>
+    <div ng-message="lookup"
+         ng-show="$ctrl.parentForm.$submitted"
+         class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+  </div>
+</div>

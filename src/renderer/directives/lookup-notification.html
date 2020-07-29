@@ -1,0 +1,38 @@
+<div class="ob-lookup__notification"
+     ng-class="{
+       'is-looking-up': $ctrl.obLookupCtrl.isLookingUp,
+       'is-extended': $ctrl.obLookupCtrl.hasLookupFailed || ($ctrl.obLookupCtrl.isCancellable && !$ctrl.obLookupCtrl.hasLookupSucceeded)
+      }">
+  <div class="notification has-margin-top-7 has-text-centered">
+    <button ng-if="$ctrl.obLookupCtrl.hasLookupFailed"
+            type="button"
+            class="delete fade-in"
+            ng-click="$ctrl.obLookupCtrl.isLookingUp = false;"></button>
+
+    <div ng-if="$ctrl.obLookupCtrl.hasLookupFailed">
+      <div ng-if="!$ctrl.obLookupCtrl.isOffline">
+        <i class="material-icons fade-in has-text-danger">error_outline</i>
+        <p class="fade-in"
+           ng-bind-html="$ctrl.obLookupCtrl.lookupErrorMessage"></p>
+      </div>
+      <div ng-if="$ctrl.obLookupCtrl.isOffline">
+        <i class="material-icons fade-in has-text-warning">wifi_off</i>
+        <p class="fade-in">It looks like you're offline. Please try again when connectivity is restored.</p>
+      </div>
+    </div>
+
+    <i ng-if="$ctrl.obLookupCtrl.hasLookupSucceeded"
+       class="material-icons has-text-success fade-in">check_circle_outline</i>
+
+    <on-loading ng-if="!$ctrl.obLookupCtrl.hasLookupSucceeded && !$ctrl.obLookupCtrl.hasLookupFailed"
+                small="true"></on-loading>
+
+    <div ng-if="$ctrl.obLookupCtrl.isCancellable && !$ctrl.obLookupCtrl.hasLookupSucceeded && !$ctrl.obLookupCtrl.hasLookupFailed"
+         class="has-margin-top-5 fade-in">
+      <p>Taking longer than expected?</p>
+      <button type="button"
+              class="button has-margin-top-8"
+              ng-click="$ctrl.obLookupCtrl.onCancelLookup()">Cancel</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+<div class="ob-form__element ob-time">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">
+    {{::$ctrl.element.label}}
+  </label>
+
+  <div class="field has-addons">
+    <div class="control is-expanded">
+      <input type="time"
+             ob-placeholder="{{::$ctrl.element.placeholderValue}}"
+             ob-date-picker
+             fp-opts="$ctrl.createDateOptions($ctrl.element)"
+             id="{{::$ctrl.element.id}}_{{::$id}}"
+             name="{{::$ctrl.element.name}}"
+             id="{{::$ctrl.element.id}}"
+             class="input ob-input"
+             ng-required="::$ctrl.element.required"
+             ng-model="$ctrl.value"
+             ng-disabled={{::$ctrl.element.readOnly}} />
+    </div>
+    <div ng-if="$ctrl.element.readOnly && $ctrl.value"
+         class="control">
+      <button class="button is-input-addon cypress-copy-to-clipboard-button"
+              type="button"
+              ob-copy-to-clipboard-button="$ctrl.formatTime($ctrl.value)">
+      </button>
+    </div>
+    <div ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+         class="control">
+      <button class="button is-primary is-input-addon cypress-lookup-button"
+              type="button"
+              ob-lookup-button>
+      </button>
+    </div>
+  </div>
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">Please enter a value for this field.</div>
+    <div ng-message="time"
+         class="has-text-danger ob-error__text cypress-required">Invalid time.</div>
+    <div ng-message="lookup"
+         ng-show="$ctrl.parentForm.$submitted"
+         class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+  </div>
+</div>

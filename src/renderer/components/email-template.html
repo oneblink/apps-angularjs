@@ -1,0 +1,47 @@
+<div class="ob-form__element ob-email">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">
+    {{::$ctrl.element.label}}
+  </label>
+
+  <div class="field has-addons">
+    <div class="control is-expanded">
+      <input type="email"
+        placeholder="{{::$ctrl.element.placeholderValue}}"
+        id="{{::$ctrl.element.id}}_{{::$id}}"
+        name="{{::$ctrl.element.name}}"
+        class="input ob-input cypress-email-control"
+        ng-required="::$ctrl.element.required"
+        ng-model="$ctrl.value"
+        ng-disabled={{::$ctrl.element.readOnly}}
+        ng-change="$ctrl.updateProperty({ value: $ctrl.value })" />
+    </div>
+    <div ng-if="$ctrl.element.readOnly && $ctrl.value"
+         class="control">
+      <button class="button is-input-addon cypress-copy-to-clipboard-button"
+              type="button"
+              ob-copy-to-clipboard-button="$ctrl.value">
+      </button>
+    </div>
+    <div ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+         class="control">
+      <button class="button is-primary is-input-addon cypress-lookup-button"
+              type="button"
+              ob-lookup-button>
+      </button>
+    </div>
+  </div>
+
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">Please enter a value for this field.</div>
+    <div ng-message="email"
+         class="has-text-danger ob-error__text cypress-email-invalid">Please enter a valid email for this field.</div>
+    <div ng-message="lookup"
+         ng-show="$ctrl.parentForm.$submitted"
+         class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+  </div>
+</div>

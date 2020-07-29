@@ -1,0 +1,16 @@
+<div class="ob-form__element ob-captcha">
+  <div vc-recaptcha
+       id="{{::$ctrl.element.id}}_{{::$id}}"
+       name="{{::$ctrl.element.name}}"
+       class="ob-input cypress-captcha-control"
+       required
+       ng-model="$ctrl.value"
+       on-success="$ctrl.updateProperty({ value: response })">
+  </div>
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">Please complete the CAPTCHA successfully</div>
+  </div>
+</div>

@@ -1,0 +1,291 @@
+<div class="modal cypress-error-modal cypress-submission-error"
+     ng-class="{ 'is-active': $ctrl.error }">
+  <div class="modal-background-faded"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p class="modal-card-title cypress-error-title">{{$ctrl.errorTitle || 'Whoops...'}}</p>
+    </header>
+    <section class="modal-card-body cypress-error-message">
+      {{$ctrl.error}}
+      <ul ng-show="$ctrl.elementsEvaluatedForConditionalLogic"
+          class="cypress-error-modal-elements-evaluated">
+        <li ng-repeat="elementName in $ctrl.elementsEvaluatedForConditionalLogic">{{elementName}}</li>
+      </ul>
+    </section>
+    <footer class="modal-card-foot"
+            ng-hide="$ctrl.errorTitle === 'Sorry'">
+      <div class="buttons ob-buttons">
+        <button type="button"
+                class="button ob-button is-primary"
+                ng-click="$ctrl.cancelForm()">Okay</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<form name="obForm"
+      class="ob-form cypress-ob-form {{'ob-form__page-' + ($ctrl.currentPageIndex + 1)}}"
+      novalidate>
+
+  <div ng-if="$ctrl.definition">
+    <i class="material-icons ob-form__auto-save-icon"
+       ng-show="$ctrl.isAutoSaving">sync</i>
+
+    <div class="steps-header ob-steps-navigation__header"
+         ng-class="{'is-active': $ctrl.isStepsHeaderActive }"
+         ng-click="$ctrl.toggleStepsNavigation()"
+         ng-if="$ctrl.isShowingMultiplePages()">
+      <span class="icon is-invisible">
+        <i class="material-icons">keyboard_arrow_down</i>
+      </span>
+      <div class="steps-header-active-page">
+        <span class="steps-header-active-page-icon"
+              ng-hide="$ctrl.pageHasErrors($ctrl.currentPageIndex)">{{$ctrl.getCurrentPageNumber()}}</span>
+        <span class="icon"
+              ng-show="$ctrl.pageHasErrors($ctrl.currentPageIndex)">
+          <i class="material-icons has-text-danger is-size-4">warning</i>
+        </span>
+        <span class="steps-header-active-page-label cypress-tablet-step-title">{{$ctrl.getCurrentPage().label}}</span>
+      </div>
+      <span class="dropdown icon">
+        <i class="material-icons">keyboard_arrow_down</i>
+      </span>
+    </div>
+
+    <div id="steps-navigation"
+         class="ob-steps-navigation"
+         ng-class="{'is-active': $ctrl.isStepsHeaderActive }"
+         ng-if="$ctrl.isShowingMultiplePages()">
+      <div class="steps is-small is-horizontal-tablet cypress-steps">
+        <div ng-repeat="page in $ctrl.getVisiblePages()"
+             id="steps-navigation-step-{{::page.index}}"
+             class="step-item cypress-step-item cypress-step-button-{{page.index}}"
+             ng-class="{
+                'is-active': $ctrl.currentPageIndex === page.index,
+                'is-completed': $ctrl.currentPageIndex > page.index,
+                'is-error': $ctrl.pageHasErrors(page.index)
+              }"
+             ng-click="$ctrl.setPageIndex(page.index)">
+          <div class="step-marker step-marker-error ob-step-marker cypress-step-marker"
+               name="cypress-page-stepper-{{::page.index + 1}}"
+               value="{{::page.index + 1}}">
+            <span ng-hide="$ctrl.pageHasErrors(page.index)">{{$index + 1}}</span>
+            <span class="icon tooltip has-tooltip-top cypress-page-error"
+                  ng-show="$ctrl.pageHasErrors(page.index)"
+                  data-tooltip="Page has errors">
+              <i class="material-icons has-text-danger is-size-3">warning</i>
+            </span>
+          </div>
+          <div class="step-details ob-step-details">
+            <p class="step-title ob-step-title cypress-desktop-step-title">{{::page.label}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps-navigation-background ob-steps-navigation__background"
+         ng-click="$ctrl.toggleStepsNavigation()"></div>
+
+    <div class="steps">
+      <div class="steps-content"
+           ng-class="::{ 'is-single-step' : $ctrl.pages.length === 1 }">
+        <div ng-repeat="page in $ctrl.getVisiblePages()"
+             class="ob-page step-content is-active cypress-page"
+             ng-class="{ 'is-invisible': $ctrl.currentPageIndex !== page.index }">
+          <form-elements elements="page.elements"
+                         model="$ctrl.model"
+                         conditionally-show="::$ctrl.conditionallyShow"
+                         conditionally-show-option-filter="::$ctrl.conditionallyShowOptionFilter"
+                         odd-or-even="even"
+                         ng-form="ngForm_pageElements_{{page.index}}"
+                         on-change="$ctrl.handleModelChange($elementNamePath, $element, $value)"
+                         on-change-elements="page.elements = $elements">
+          </form-elements>
+        </div>
+      </div>
+
+      <div class="steps-actions"
+           ng-if="$ctrl.isShowingMultiplePages()">
+        <div class="steps-action">
+          <button type="button"
+                  ng-click="$ctrl.goToPreviousPage()"
+                  ng-disabled="$ctrl.isFirstVisiblePage()"
+                  class="button is-light cypress-pages-previous">
+            <span class="icon">
+              <i class="material-icons">keyboard_arrow_left</i>
+            </span>
+            <span>Back</span>
+          </button>
+        </div>
+        <div class="step-progress-mobile cypress-steps-mobile">
+          <div class="step-progress-mobile-dot"
+               ng-repeat="page in $ctrl.getVisiblePages()"
+               ng-class="{
+                  'is-active': $ctrl.currentPageIndex === page.index,
+                  'has-background-danger': $ctrl.pageHasErrors(page.index) && $ctrl.currentPageIndex !== page.index
+                  }"></div>
+        </div>
+        <div class="steps-action">
+          <button type="button"
+                  ng-click="$ctrl.goToNextPage()"
+                  ng-disabled="$ctrl.isLastVisiblePage()"
+                  class="button is-light cypress-pages-next">
+            <span>Next</span>
+            <span class="icon">
+              <i class="material-icons">keyboard_arrow_right</i>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="buttons ob-buttons ob-buttons-submit">
+      <button type="button"
+              class="button ob-button is-primary ob-button-save-draft cypress-save-draft-form"
+              ng-click="$ctrl.showDraftDetails()"
+              ng-disabled="$ctrl.isPreview || $ctrl.isSavingDraft"
+              ng-hide="::$ctrl.isInformationForm || !$ctrl.isDraftsEnabled">{{:: $ctrl.draftId ? 'Update Draft' : 'Save Draft' }}</button>
+      <span class="ob-buttons-submit__spacer"></span>
+      <button type="button"
+              class="button ob-button is-light ob-button-submit-cancel cypress-cancel-form"
+              ng-click="$ctrl.showConfirmCancel()"
+              ng-disabled="$ctrl.isPreview || $ctrl.isSavingDraft"
+              ng-hide="::$ctrl.isInformationForm">Cancel</button>
+      <button type="submit"
+              class="button ob-button is-success ob-button-submit cypress-submit-form-button"
+              ng-class="::{
+                  'cypress-submit-form': !$ctrl.isInformationForm,
+                  'cypress-done': $ctrl.isInformationForm,
+                }"
+              ng-click="$ctrl.isInformationForm ? $ctrl.postSubmissionAction() : $ctrl.submit()"
+              ng-if="$ctrl.isLastVisiblePage()"
+              ng-disabled="$ctrl.isSubmitting || $ctrl.isPreview || $ctrl.isSavingDraft">
+        <span ng-if="::$ctrl.isInformationForm">Done</span>
+        <span ng-if="::!$ctrl.isInformationForm">Submit</span>
+      </button>
+    </div>
+
+    <div class="modal"
+         ng-class="{ 'is-active': !$ctrl.error && ($ctrl.isSubmitting || $ctrl.submissionResult || $ctrl.draftDetails) }">
+      <div class="modal-background-faded"></div>
+      <div class="modal-card cypress-submitting has-text-centered"
+           ng-show="$ctrl.isSubmitting">
+        <header class="modal-card-head">
+          <p class="modal-card-title cypress-error-title">Submitting Form...</p>
+        </header>
+        <section class="modal-card-body">
+          <on-loading class="has-text-centered"></on-loading>
+        </section>
+      </div>
+
+      <div class="modal-card cypress-submission-success has-text-centered"
+           ng-show="!$ctrl.isSubmitting && $ctrl.submissionResult.submissionId">
+        <header class="modal-card-head">
+          <p class="modal-card-title cypress-success-title">Success</p>
+        </header>
+        <section class="modal-card-body">
+          <i class="material-icons has-text-success icon-x-large">check</i>
+          <div class="ob-submission-success-id">
+            <p class="cypress-submission-success-id">Submission ID: {{::$ctrl.submissionResult.submissionId}}</p>
+            <button class="button is-input-addon cypress-copy-to-clipboard-submission-id-button"
+                    type="button"
+                    ob-copy-to-clipboard-button="::$ctrl.submissionResult.submissionId">
+            </button>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button type="button"
+                  class="button ob-button is-primary"
+                  ng-click="$ctrl.postSubmissionAction()">Okay</button>
+        </footer>
+      </div>
+      <div class="modal-card cypress-submission-offline has-text-centered"
+           ng-show="!$ctrl.isSubmitting && $ctrl.submissionResult.isOffline">
+        <header class="modal-card-head">
+          <p class="modal-card-title cypress-offline-title">It looks like you're Offline</p>
+        </header>
+        <section class="modal-card-body cypress-offline-body">
+          <p ng-show="$ctrl.submissionResult.isInPendingQueue">
+            Submission has been saved to the pending queue, and will be submitted when connectivity is restored.
+          </p>
+          <p ng-hide="$ctrl.submissionResult.isInPendingQueue">
+            You cannot submit this form while offline, please try again when connectivity is restored.
+          </p>
+          <i class="material-icons has-text-warning icon-x-large">wifi_off</i>
+        </section>
+        <footer class="modal-card-foot">
+          <button type="button"
+                  class="button ob-button is-primary"
+                  ng-click="$ctrl.postSubmissionAction()">Okay</button>
+        </footer>
+      </div>
+      <div class="modal-card cypress-draft-details"
+           ng-show="$ctrl.draftDetails">
+        <header class="modal-card-head">
+          <p class="modal-card-title cypress-draft-title">Draft Title</p>
+        </header>
+        <section class="modal-card-body cypress-draft-body">
+          <input ng-model="$ctrl.draftTitle"
+                 class="input ob-draft-title cypress-draft-title-input" />
+        </section>
+        <footer class="modal-card-foot ob-modal__footer">
+          <button type="button"
+                  class="button ob-button is-light cypress-draft-details-cancel"
+                  ng-click="$ctrl.hideDraftDetails()">Cancel</button>
+          <button type="button"
+                  class="button ob-button is-primary cypress-draft-details-save"
+                  ng-click="$ctrl.saveDraft()">Save</button>
+        </footer>
+      </div>
+    </div>
+
+    <div class="modal"
+         ng-class="{ 'is-active': $ctrl.cancelConfirm }">
+      <div class="modal-background-faded"></div>
+      <div class="modal-card cypress-cancel-confirm"
+           ng-show="$ctrl.cancelConfirm">
+        <header class="modal-card-head">
+          <p class="modal-card-title cypress-cancel-confirm-title">Unsaved Changes</p>
+        </header>
+        <section class="modal-card-body cypress-cancel-confirm-body">
+          <p>
+            You have unsaved changes, are you sure you want discard them?
+          </p>
+        </section>
+        <footer class="modal-card-foot ob-modal__footer">
+          <button type="button"
+                  class="button ob-button is-success cypress-cancel-confirm-save-draft"
+                  ng-click="$ctrl.showDraftDetails()"
+                  ng-hide="!$ctrl.isDraftsEnabled">{{::$ctrl.draftId ? 'Update Draft' : 'Save Draft' }}</button>
+          <span style="flex: 1"></span>
+          <button type="button"
+                  class="button ob-button is-light cypress-cancel-confirm-back"
+                  ng-click="$ctrl.hideConfirmCancel()">Back</button>
+          <button type="button"
+                  class="button ob-button is-primary cypress-cancel-confirm-discard"
+                  ng-click="$ctrl.cancelForm()">Discard</button>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <div class="modal is-active"
+       ng-if="$ctrl.hasAutoSaveModel">
+    <div class="modal-background-faded"></div>
+    <div class="modal-card cypress-continue-auto-save">
+      <header class="modal-card-head">
+        <p class="modal-card-title cypress-error-title">Continue?</p>
+      </header>
+      <section class="modal-card-body">
+        We found an in progress submission, would you like to pick up where you left off or start again?
+      </section>
+      <footer class="modal-card-foot ob-modal__footer">
+        <button type="button"
+                class="button ob-button is-light cypress-continue-auto-save-start-again-button"
+                ng-click="$ctrl.startNewFormSubmission()">Start Again</button>
+        <button type="button"
+                class="button ob-button is-primary cypress-continue-auto-save-continue-button"
+                ng-click="$ctrl.startFormSubmission();">Continue</button>
+      </footer>
+    </div>
+  </div>
+</form>

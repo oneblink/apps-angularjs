@@ -1,0 +1,85 @@
+<div class="ob-form__element ob-barcode-scanner">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">{{::$ctrl.element.label}}</label>
+  <div class="control">
+    <div ng-show="$ctrl.isCameraOpen">
+      <figure>
+        <div class="figure-content has-text-centered">
+          <on-loading ng-show="$ctrl.loading"
+                      small="true"></on-loading>
+
+          <div ng-show="$ctrl.error">
+            <h4 class="title is-4">Whoops...</h4>
+            <p>{{$ctrl.error}}</p>
+          </div>
+
+          <div style="position: relative;"
+               ng-hide="$ctrl.loading || $ctrl.error">
+            <div class="ob-barcode-scanner__square"></div>
+            <div class="ob-barcode-scanner__line"></div>
+            <video autoplay
+                   playsinline
+                   class="ob-barcode-scanner__video">
+            </video>
+          </div>
+        </div>
+      </figure>
+
+      <div class="buttons ob-buttons">
+        <button type="button"
+                class="button ob-button ob-button__cancel is-light cypress-cancel-scan-barcode-button"
+                ng-click="$ctrl.closeBarcodeScanner()">Cancel</button>
+        <button type="button"
+                class="button ob-button ob-button__switch-camera is-primary cypress-switch-camera-button"
+                ng-click="$ctrl.switchCamera()"
+                ng-if="$ctrl.multipleDevices">Switch Camera</button>
+      </div>
+    </div>
+
+    <div ng-hide="$ctrl.isCameraOpen">
+
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input type="text"
+            placeholder="{{::$ctrl.element.placeholderValue}}"
+            class="input ob-input cypress-barcode-scanner-input has-margin-bottom-8"
+            id="{{::$ctrl.element.id}}_{{::$id}}"
+            name="{{::$ctrl.element.name}}"
+            ng-model="$ctrl.value"
+            ng-required="::$ctrl.element.required"
+            ng-disabled={{::$ctrl.element.readOnly}}
+            ng-change="$ctrl.updateProperty({ value: $ctrl.value })" />
+        </div>
+        <div ng-if="$ctrl.element.readOnly && $ctrl.value"
+             class="control">
+          <button class="button is-input-addon cypress-copy-to-clipboard-button"
+                  type="button"
+                  ob-copy-to-clipboard-button="$ctrl.value">
+          </button>
+        </div>
+        <div ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+             class="control">
+          <button class="button is-primary is-input-addon cypress-lookup-button"
+                  type="button"
+                  ob-lookup-button>
+          </button>
+        </div>
+      </div>
+
+      <button type="button"
+              class="button ob-button ob-button__open is-primary cypress-start-scan-barcode-button"
+              ng-disabled={{::$ctrl.element.readOnly}}
+              ng-click="$ctrl.openBarcodeScanner()">Scan Barcode</button>
+    </div>
+  </div>
+  <div role="alert"
+       ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       ng-show="!$ctrl.loading && $ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">A barcode could not be located.</div>
+    <div ng-message="lookup"
+         ng-show="$ctrl.parentForm.$submitted"
+         class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+  </div>
+</div>

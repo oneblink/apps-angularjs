@@ -1,0 +1,72 @@
+<div class="modal cypress-repeatable-set-prompt"
+     ng-class="{ 'is-active': $ctrl.isDeleting }">
+  <div class="modal-background-faded"></div>
+  <div class="modal-card">
+    <header class="modal-card-head">
+      <p ng-hide="$ctrl.element.removeSetEntryLabel.length > 0"
+         class="modal-card-title cypress-repeatable-set-remove-entry-header">Remove Entry</p>
+      <p ng-show="$ctrl.element.removeSetEntryLabel.length > 0"
+         class="modal-card-title cypress-repeatable-set-remove-entry-header">{{::$ctrl.element.removeSetEntryLabel}}</p>
+    </header>
+    <section class="modal-card-body">
+      Are you sure you want to remove this entry?
+    </section>
+    <footer class="modal-card-foot">
+      <div class="buttons ob-buttons">
+        <button type="button"
+                class="button ob-button is-light cypress-cancel-repeatable-set"
+                ng-click="$ctrl.cancelPrompt()">Cancel</button>
+        <button type="button"
+                class="button ob-button is-primary cypress-confirm-repeatable-set"
+                ng-click="$ctrl.removeEntry()">Yes</button>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<div class="ob-form__element ob-repeatable-set {{::$ctrl.oddOrEven}}">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}">
+    {{::$ctrl.element.label}}
+  </label>
+
+  <div ng-repeat="entry in ($ctrl.ngModelCtrl.$viewValue || [])"
+       class="ob-repeatable-set__container cypress-repeatable-set-container">
+    <button type="button"
+            class="button ob-button ob-button_remove is-light cypress-remove-repeatable-set-entry"
+            ng-click="$ctrl.removeEntryPrompt($index)"
+            ng-disabled={{::$ctrl.element.readOnly}}>
+      <span class="icon">
+        <i class="material-icons">delete_outline</i>
+      </span>
+      <span ng-if="$ctrl.element.removeSetEntryLabel.length > 0">{{::$ctrl.element.removeSetEntryLabel}}</span>
+    </button>
+    <form-elements elements="$ctrl.element.elements"
+                   conditionally-show="::$ctrl.conditionallyShow"
+                   conditionally-show-option-filter="::$ctrl.conditionallyShowOptionFilter"
+                   model="entry"
+                   ng-form="ngForm-{{::$ctrl.element.name}}-{{::$index}}"
+                   odd-or-even="{{::$ctrl.oddOrEven === 'odd' ? 'even' : 'odd'}}"
+                   on-change="$ctrl.updateNestedProperty({ $elementNamePath, $element, $value  })"
+                   on-change-elements="$ctrl.element.elements = $elements"
+                   parent-form-name="::$ctrl.parentFormName"></form-elements>
+  </div>
+
+  <button type="button"
+          class="button ob-button ob-button__add is-primary cypress-add-repeatable-set"
+          ng-click="$ctrl.addEntry()"
+          ng-disabled={{::$ctrl.element.readOnly}}>
+    <span class="icon">
+      <i class="material-icons">add</i>
+    </span>
+    <span ng-if="$ctrl.element.addSetEntryLabel.length > 0">{{::$ctrl.element.addSetEntryLabel}}</span>
+  </button>
+  <div role="alert"
+       ng-messages="$ctrl.ngModelCtrl.$error"
+       ng-show="$ctrl.ngModelCtrl.$dirty">
+    <div ng-message="minEntries"
+         class="has-text-danger ob-error__text cypress-repeatable-set-min-entries">Must have at least {{::$ctrl.element.minSetEntries}} entry/entries.</div>
+    <div ng-message="maxEntries"
+         class="has-text-danger ob-error__text cypress-repeatable-set-max-entries">Cannot have more than {{::$ctrl.element.maxSetEntries}} entry/entries.</div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="ob-form__element ob-date">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">{{::$ctrl.element.label}}</label>
+
+  <div class="field has-addons">
+    <div class="control is-expanded">
+      <input type="date"
+             ob-placeholder="{{::$ctrl.element.placeholderValue}}"
+             ob-date-picker
+             fp-opts="$ctrl.createDateOptions($ctrl.element)"
+             name="{{::$ctrl.element.name}}"
+             id="{{::$ctrl.element.id}}_{{::$id}}"
+             class="input ob-input"
+             ng-required="::$ctrl.element.required"
+             ng-model="$ctrl.value"
+             min="{{::$ctrl.element.fromDate}}"
+             max="{{::$ctrl.element.toDate}}"
+             ng-disabled={{::$ctrl.element.readOnly}} />
+    </div>
+    <div ng-if="$ctrl.element.readOnly && $ctrl.value"
+         class="control">
+      <button class="button is-input-addon cypress-copy-to-clipboard-button"
+              type="button"
+              ob-copy-to-clipboard-button="$ctrl.formatDate($ctrl.value)">
+      </button>
+    </div>
+    <div ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+         class="control">
+      <button class="button is-primary is-input-addon cypress-lookup-button"
+              type="button"
+              ob-lookup-button>
+      </button>
+    </div>
+  </div>
+
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">Please enter a date.</div>
+    <div ng-message="date"
+         class="has-text-danger ob-error__text cypress-required">Invalid date.</div>
+    <div ng-message="min"
+         class="has-text-danger ob-error__text cypress-min-max">Date cannot be before {{::$ctrl.element.fromDate | date : 'MMMM d, yyyy'}}</div>
+    <div ng-message="max"
+         class="has-text-danger ob-error__text cypress-min-max">Date cannot be after {{::$ctrl.element.toDate | date : 'MMMM d, yyyy'}}</div>
+    <div ng-message="lookup"
+         ng-show="$ctrl.parentForm.$submitted"
+         class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+  </div>
+</div>

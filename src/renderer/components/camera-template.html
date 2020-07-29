@@ -1,0 +1,117 @@
+<div class="ob-form__element ob-camera">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">{{::$ctrl.element.label}}</label>
+  <div class="control">
+    <figure ng-if="!$ctrl.loading && $ctrl.value">
+      <img ng-src="{{::$ctrl.value}}"
+           class="cypress-camera-image ob-camera__img"></img>
+      <button type="button"
+              class="button is-primary ob-camera__annotate-button cypress-annotate-button"
+              ng-click="$ctrl.annotate()"
+              ng-disabled="::$ctrl.element.readOnly">
+        <span class="icon">
+          <i class="material-icons">brush</i>
+        </span>
+      </button>
+    </figure>
+
+    <figure ng-if="$ctrl.loading">
+      <div class="figure-content has-text-centered cypress-camera-loading-image">
+        <on-loading small="true"></on-loading>
+      </div>
+    </figure>
+
+    <input class="ng-hide ob-input cypress-camera-control"
+           type="file"
+           accept="image/*"
+           capture="environment"
+           id="{{::$ctrl.element.id}}_{{::$id}}"
+           name="{{::$ctrl.element.name}}"
+           ng-model="$ctrl.value"
+           ng-change="$ctrl.updateProperty({ value: $ctrl.value })"
+           ng-required="::$ctrl.element.required"
+           ng-disabled="::$ctrl.element.readOnly">
+    <div class="buttons ob-buttons">
+      <button type="button"
+              class="button ob-button ob-button__clear is-light cypress-clear-camera"
+              ng-click="$ctrl.clearImage()"
+              ng-if="$ctrl.value"
+              ng-disabled="$ctrl.element.readOnly || $ctrl.loading">Clear</button>
+      <button type="button"
+              class="button ob-button ob-button__download is-primary cypress-download-file-button"
+              ng-if="$ctrl.value"
+              ob-download-file-button="$ctrl.value"
+              ob-download-file-name="{{::$ctrl.element.id}}"></button>
+      <button type="button"
+              class="button ob-button ob-button__open is-primary cypress-open-camera"
+              ng-click="$ctrl.openCamera()"
+              ng-if="!$ctrl.value"
+              ng-disabled="$ctrl.element.readOnly || $ctrl.loading">Open Camera</button>
+    </div>
+  </div>
+  <div role="alert"
+       ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       ng-show="!$ctrl.loading && $ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">A photo is required.</div>
+  </div>
+</div>
+
+<div class="modal is-active"
+     ng-if="$ctrl.isAnnotating">
+  <div class="modal-background-faded"></div>
+  <div class="ob-annotation">
+    <div class="ob-annotation__buttons ob-annotation__buttons-colours">
+      <button ng-repeat="colour in ::$ctrl.annotationButtonColours"
+              type="button"
+              class="button ob-annotation__button ob-annotation__button-colour cypress-annotation-colour-button"
+              ng-click="$ctrl.annotationOptions.penColor = colour"
+              ng-style="::{ 'background-color': colour }"
+              ng-class="{'is-selected': $ctrl.annotationOptions.penColor === colour }"></button>
+    </div>
+    <div class="ob-annotation__content">
+      <bm-signature-pad ng-model="$ctrl.annotation"
+                        class="ob-annotation__signature-pad cypress-annotation-signature-pad"
+                        options="$ctrl.annotationOptions"></bm-signature-pad>
+    </div>
+    <div class="ob-annotation__buttons ob-annotation__buttons-actions">
+      <button type="button"
+              class="button is-light ob-button ob-annotation__button ob-annotation__button-action cypress-annotation-cancel-button"
+              ng-click="$ctrl.cancelAnnotation()">Cancel</button>
+      <button type="button"
+              class="button is-primary ob-button ob-annotation__button ob-annotation__button-action cypress-annotation-save-button"
+              ng-disabled="!$ctrl.annotation"
+              ng-click="$ctrl.saveAnnotation()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal cypress-error-modal ob-modal"
+     ng-class="{ 'is-active': $ctrl.error }">
+  <div class="modal-background-faded"></div>
+  <div class="modal-card">
+    <header class="modal-card-head ob-modal__head">
+      <p class="modal-card-title cypress-error-title">{{$ctrl.errorTitle || 'Whoops...'}}</p>
+    </header>
+    <section class="modal-card-body ob-modal__body">
+      <p>
+        An error occurred while attempting to take a photo. Please click "Okay" below to try again. If the problem persists, please contact support.
+      </p>
+      <div class="content has-margin-top-6"
+           ng-if="$ctrl.viewError">
+        <blockquote>
+          {{$ctrl.error}}
+        </blockquote>
+      </div>
+    </section>
+    <footer class="modal-card-foot">
+      <button type="button"
+              class="button ob-button is-light cypress-view-error-button"
+              ng-click="$ctrl.viewError = !$ctrl.viewError">{{$ctrl.viewError ? 'Hide' : 'View'}} Details</button>
+      <button type="button"
+              class="button ob-button is-primary cypress-close-error-button"
+              ng-click="$ctrl.error = null">Okay</button>
+    </footer>
+  </div>
+</div>
