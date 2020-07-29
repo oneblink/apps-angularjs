@@ -1,0 +1,69 @@
+<div class="ob-form__element ob-autocomplete">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">
+    {{::$ctrl.element.label}}</label>
+
+  <div>
+    <div class="control">
+      <div class="dropdown"
+           ng-class="{'is-active': $ctrl.isAutocompleteOpen && $ctrl.options.length }"
+           name="{{::$ctrl.element.name}}"
+           id="{{::$ctrl.element.id}}_{{::$id}}"
+           ng-required="::$ctrl.element.required"
+           ng-model="$ctrl.value"
+           ng-change="$ctrl.updateProperty({ value: $ctrl.value }); $ctrl.syncValueWithLabel($ctrl.value);"
+           ob-options-validator="$ctrl.getOptions()"
+           ob-element="::$ctrl.element">
+
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input type="text"
+                   autocomplete="off"
+                   class="cypress-autocomplete-search-control input ob-input"
+                   ng-required="::$ctrl.element.required"
+                   ng-model="$ctrl.label"
+                   ng-disabled={{::$ctrl.element.readOnly}}
+                   ng-focus="$ctrl.onFocus()"
+                   ng-blur="$ctrl.onBlur()"
+                   ng-keydown="$ctrl.onKeyUp($event)"
+                   ng-change="$ctrl.onLabelChange($ctrl.label)" />
+          </div>
+          <div ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+               class="control">
+            <button class="button is-primary is-input-addon cypress-lookup-button"
+                    type="button"
+                    ob-lookup-button>
+            </button>
+          </div>
+        </div>
+
+        <div class="dropdown-menu"
+             ng-if="!$ctrl.isFetchingOptions">
+          <div class="ob-autocomplete__dropdown-content dropdown-content cypress-autocomplete-search-dropdown-content">
+            <a ng-repeat="option in $ctrl.options"
+               class="dropdown-item cypress-autocomplete-search-dropdown-item"
+               ng-mousedown="$ctrl.onClickOption($event, option)"
+               ng-class="{ 'is-active': $ctrl.currentFocusedOptionIndex === $index }"
+               ng-bind-html="option.label | highlight : $ctrl.label">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+         role="alert"
+         ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+      <div ng-message="required, isValidOption"
+           class="ob-error__text has-text-danger cypress-required">Required</div>
+      <div ng-message="lookup"
+           ng-show="$ctrl.parentForm.$submitted"
+           class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+      <div ng-show="$ctrl.isAutocompleteOpen && !$ctrl.options.length && !ctrl.isFetchingOptions"
+           class="ob-error__text cypress-no-matches-found">No matches found</div>
+    </div>
+  </div>
+  <div ng-if="$ctrl.isFetchingOptions"
+       class="cypress-loading-spinner">
+    <on-loading small="true"></on-loading>
+  </div>

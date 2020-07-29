@@ -1,0 +1,26 @@
+<div class="ob-form__element ob-location">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">{{::$ctrl.element.label}}</label>
+  <div class="control">
+    <ob-confirm-location-on-map ng-model="$ctrl.value"
+                                name="{{::$ctrl.element.name}}"
+                                id="{{::$ctrl.element.id}}_{{::$id}}"
+                                element="::$ctrl.element"
+                                height="400"
+                                zoom="10"
+                                class="cypress-location-control ob-location__control"
+                                ng-required="::$ctrl.element.required"
+                                ng-disabled="::$ctrl.element.readOnly"
+                                ng-change="$ctrl.updateProperty({ value: $ctrl.value })"></ob-confirm-location-on-map>
+  </div>
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">Please select a location.</div>
+    <div ng-message="lookup"
+         ng-show="$ctrl.parentForm.$submitted"
+         class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+  </div>
+</div>

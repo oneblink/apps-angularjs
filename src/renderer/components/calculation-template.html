@@ -1,0 +1,16 @@
+<div class="ob-form__element ob-calculation">
+  <div ng-bind-html="$ctrl.htmlValue"
+       class="cypress-calculation-result"></div>
+
+  <div class="notification cypress-calculation-is-invalid"
+       ng-show="$ctrl.calculationError">
+    <div class="columns is-vcentered">
+      <div class="column is-narrow">
+        <i class="material-icons has-text-warning">error</i>
+      </div>
+      <div class="column">
+        <p>There is an error in the calculation for this element.</p>
+      </div>
+    </div>
+  </div>
+</div>

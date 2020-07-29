@@ -1,0 +1,55 @@
+<div class="ob-form__element ob-file">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">
+    {{::$ctrl.element.label}}</label>
+  <div class="control">
+    <div class="file has-name">
+      <label class="file-label cypress-file-control"
+             ng-disabled="::$ctrl.element.readOnly">
+        <input type="file"
+               id="{{::$ctrl.element.id}}_{{::$id}}"
+               name="{{::$ctrl.element.name}}"
+               class="file-input ob-input"
+               ng-required="::$ctrl.element.required"
+               ng-model="$ctrl.value"
+               ng-disabled="::$ctrl.element.readOnly"
+               ng-change="$ctrl.updateProperty({ value: $ctrl.value })">
+        <span class="file-cta">
+          <span class="file-icon">
+            <i class="material-icons">attach_file</i>
+          </span>
+          <span class="file-label">
+            Choose {{$ctrl.value ? 'another' : 'a'}} file...
+          </span>
+        </span>
+        <span class="file-name">
+          <span ng-show="$ctrl.value"
+                class="file-name-text">{{$ctrl.fileName || 'File has been successfully attached.'}}</span>
+        </span>
+      </label>
+    </div>
+    <div class="buttons ob-buttons">
+      <button type="button"
+              class="button ob-button ob-button__clear is-light cypress-clear-file-button"
+              ng-click="$ctrl.clear()"
+              ng-show="$ctrl.value"
+              ng-disabled="::$ctrl.element.readOnly">Clear</button>
+      <button type="button"
+              class="button ob-button ob-button__download is-primary cypress-download-file-button"
+              ng-if="$ctrl.value"
+              ob-download-file-button="$ctrl.value"
+              ob-download-file-name="{{::$ctrl.element.id}}"></button>
+    </div>
+  </div>
+
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">Please upload a file.</div>
+  </div>
+  <div ng-if="$ctrl.invalidFile"
+       class="has-text-warning warning-message cypress-restricted-message">
+    Only the following file types are accepted: {{$ctrl.restrictedMessage}}</div>
+</div>

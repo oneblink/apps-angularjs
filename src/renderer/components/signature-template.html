@@ -1,0 +1,33 @@
+<div class="ob-form__element ob-signature">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">{{::$ctrl.element.label}}</label>
+  <div class="control">
+    <bm-signature-pad ng-model="$ctrl.value"
+                      class="input ob-signature__control cypress-signature-control"
+                      name="{{::$ctrl.element.name}}"
+                      id="{{::$ctrl.element.id}}_{{::$id}}"
+                      ng-required="::$ctrl.element.required"
+                      ng-disabled="$ctrl.element.readOnly || $ctrl.disabled"
+                      crop="true"
+                      options="$ctrl.bmSignaturePadOptions"
+                      ng-change="$ctrl.updateProperty({ value: $ctrl.value })"></bm-signature-pad>
+    <div class="buttons ob-buttons">
+      <button type="button"
+              class="button ob-button is-light ob-button__clear cypress-clear-signature"
+              ng-click="$ctrl.disabled = false; $ctrl.value = undefined; $ctrl.updateProperty({ value: undefined })"
+              ng-disabled="::$ctrl.element.readOnly">Clear</button>
+      <button type="button"
+              class="button ob-button ob-button__done is-primary cypress-done-signature-button"
+              ng-click="$ctrl.disabled = true"
+              ng-if="::!$ctrl.element.readOnly"
+              ng-disabled="$ctrl.disabled">Done</button>
+    </div>
+  </div>
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">A Signature is required.</div>
+  </div>
+</div>

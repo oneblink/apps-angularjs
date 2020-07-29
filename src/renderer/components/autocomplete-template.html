@@ -1,0 +1,72 @@
+<div class="ob-form__element ob-autocomplete">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">
+    {{::$ctrl.element.label}}</label>
+  <div ng-if="$ctrl.isFetchingOptions">
+    <on-loading small="true"></on-loading>
+  </div>
+  <div ng-if="::$ctrl.element.options">
+    <div ng-if="::!$ctrl.element.options.length"
+         class="has-text-grey is-size-7">
+      We were unable to load your options. Please contact your administrator.
+    </div>
+    <div class="control"
+         ng-if="::$ctrl.element.options.length">
+      <div class="dropdown"
+           ng-class="{'is-active': $ctrl.isAutocompleteOpen && $ctrl.filteredOptions.length }"
+           name="{{::$ctrl.element.name}}"
+           ng-required="::$ctrl.element.required"
+           ng-model="$ctrl.value"
+           ng-change="$ctrl.updateProperty({ value: $ctrl.value }); $ctrl.syncValueWithLabel($ctrl.value);"
+           ob-options-validator="$ctrl.getFilteredOptions()"
+           ob-element="::$ctrl.element">
+
+        <div class="field has-addons">
+          <div class="control is-expanded">
+            <input type="text"
+              placeholder="{{::$ctrl.element.placeholderValue}}"
+              id="{{::$ctrl.element.id}}_{{::$id}}"
+              autocomplete="off"
+              class="cypress-autocomplete-control input ob-input"
+              ng-required="::$ctrl.element.required"
+              ng-model="$ctrl.label"
+              ng-disabled={{::$ctrl.element.readOnly}}
+              ng-focus="$ctrl.onFocus()"
+              ng-blur="$ctrl.onBlur()"
+              ng-keydown="$ctrl.onKeyUp($event)"
+              ng-change="$ctrl.onLabelChange($ctrl.label)" />
+          </div>
+          <div ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+               class="control">
+            <button class="button is-primary is-input-addon cypress-lookup-button"
+                    type="button"
+                    ob-lookup-button>
+            </button>
+          </div>
+        </div>
+
+        <div class="dropdown-menu">
+          <div class="ob-autocomplete__dropdown-content dropdown-content cypress-autocomplete-dropdown-content">
+            <a ng-repeat="option in $ctrl.filteredOptions"
+               class="dropdown-item cypress-autocomplete-dropdown-item"
+               ng-mousedown="$ctrl.onClickOption($event, option)"
+               ng-class="{ 'is-active': $ctrl.currentFocusedOptionIndex === $index }"
+               ng-bind-html="option.label | highlight : $ctrl.label">
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+         role="alert"
+         ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+      <div ng-message="required, isValidOption"
+           class="ob-error__text has-text-danger cypress-required">Required</div>
+      <div ng-message="lookup"
+           ng-show="$ctrl.parentForm.$submitted"
+           class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+      <div ng-show="$ctrl.isAutocompleteOpen && !$ctrl.filteredOptions.length"
+           class="ob-error__text cypress-no-matches-found">No matches found</div>
+    </div>
+  </div>

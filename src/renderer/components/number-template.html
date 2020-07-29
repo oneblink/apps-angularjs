@@ -1,0 +1,71 @@
+<div class="ob-form__element ob-number">
+  <label class="label ob-label"
+         ng-class="::{'is-required': $ctrl.element.required}"
+         for="{{::$ctrl.element.id}}_{{::$id}}">{{::$ctrl.element.label}}</label>
+
+  <div ng-if="::!$ctrl.element.isSlider"
+       class="field has-addons">
+    <div class="control is-expanded">
+      <input type="number"
+        placeholder="{{::$ctrl.element.placeholderValue}}"
+        name="{{::$ctrl.element.name}}"
+        id="{{::$ctrl.element.id}}_{{::$id}}"
+        class="input ob-input cypress-number-control"
+        ng-required="::$ctrl.element.required"
+        ng-model="$ctrl.value"
+        min="{{::$ctrl.element.minNumber}}"
+        max="{{::$ctrl.element.maxNumber}}"
+        ng-disabled={{::$ctrl.element.readOnly}}
+        ng-change="$ctrl.updateProperty({ value: $ctrl.value })" />
+    </div>
+    <div ng-if="$ctrl.element.readOnly && $ctrl.value"
+         class="control">
+      <button class="button is-input-addon cypress-copy-to-clipboard-button"
+              type="button"
+              ob-copy-to-clipboard-button="$ctrl.value">
+      </button>
+    </div>
+    <div ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+         class="control">
+      <button class="button is-primary is-input-addon cypress-lookup-button"
+              type="button"
+              ob-lookup-button>
+      </button>
+    </div>
+  </div>
+  <div ng-if="::$ctrl.element.isSlider"
+       class="control">
+    <output class="ob-number__output cypress-number-output"
+            for="{{::$ctrl.element.name}}">{{$ctrl.value | number}}</output>
+    <input name="{{::$ctrl.element.name}}"
+           id="{{::$ctrl.element.id}}"
+           class="slider ob-input is-fullwidth cypress-slider-number-control is-large is-circle cypress-number-control"
+           ng-disabled="{{::$ctrl.element.readOnly}}"
+           min="{{::$ctrl.element.minNumber}}"
+           max="{{::$ctrl.element.maxNumber}}"
+           type="range"
+           ng-change="$ctrl.updateSlider($ctrl.value)"
+           ng-required="::$ctrl.element.required"
+           ng-model="$ctrl.value"
+           step="{{::$ctrl.element.sliderIncrement ? $ctrl.element.sliderIncrement : 1}}" />
+
+    <button ng-if="::!!$ctrl.element.isDataLookup || !!$ctrl.element.isElementLookup"
+            type="button"
+            class="button ob-button is-primary has-margin-top-8 cypress-lookup-button"
+            type="button"
+            ob-lookup-button></button>
+  </div>
+  <div ng-messages="$ctrl.parentForm[$ctrl.element.name].$error"
+       role="alert"
+       ng-show="$ctrl.parentForm[$ctrl.element.name].$dirty">
+    <div ng-message="required"
+         class="has-text-danger ob-error__text cypress-required">Please enter a value for this field.</div>
+    <div ng-message="number"
+         class="has-text-danger ob-error__text cypress-validation-number">Please enter a number.</div>
+    <div ng-message="min, max"
+         class="has-text-danger ob-error__text cypress-min-max">Please enter a number between {{::$ctrl.element.minNumber}} and {{::$ctrl.element.maxNumber}}</div>
+    <div ng-message="lookup"
+         ng-show="$ctrl.parentForm.$submitted"
+         class="ob-error__text has-text-danger cypress-lookup-required">Lookup is required</div>
+  </div>
+</div>
